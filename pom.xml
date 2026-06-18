@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.github.thirumalx</groupId>
-	<artifactId>aadhaar-esign</artifactId>
+	<artifactId>aadhaar-esign-orchestration-platform</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>aadhaar-esign-orchestration-platform</name>
+	<description>Aadhaar eSign Orchestration Platform</description>
 	<url/>
 	<licenses>
 		<license/>
