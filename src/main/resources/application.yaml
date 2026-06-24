@@ -1,3 +1,7 @@
 spring:
   application:
     name: aadhaar-esign
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  
