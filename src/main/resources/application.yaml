@@ -5,6 +5,10 @@ spring:
     active: DEV
   datasource:
     driver-class-name: org.postgresql.Driver
+  mvc:
+    apiversion:
+      use:
+        header: true 
   threads:
     virtual:
       enabled: true

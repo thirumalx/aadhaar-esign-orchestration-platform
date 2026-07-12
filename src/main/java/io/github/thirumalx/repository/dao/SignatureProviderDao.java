@@ -24,6 +24,7 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
     private static final String LIST = "SignatureProvider.list";
     private static final String UPDATE = "SignatureProvider.update";
     private static final String DELETE = "SignatureProvider.delete";
+    private static final String FIND_TOP_PRIORITY = "SignatureProvider.findTopPriority";
 
     @Override
     public Short save(SignatureProvider signatureProvider) {
@@ -68,5 +69,12 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
         return jdbcClient.sql(getSql(DELETE))
                 .param(PK, id)
                 .update();
+    }
+
+    @Override
+    public SignatureProvider findTopPriority() {
+        return jdbcClient.sql(getSql(FIND_TOP_PRIORITY))
+                .query(SignatureProvider.class)
+                .single();
     }
 }

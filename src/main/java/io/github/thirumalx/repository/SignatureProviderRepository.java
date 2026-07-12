@@ -17,4 +17,6 @@ public interface SignatureProviderRepository {
     int update(SignatureProvider signatureProvider);
 
     int delete(Short id);
+
+    SignatureProvider findTopPriority();
 }
