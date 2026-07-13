@@ -7,19 +7,20 @@ import java.time.OffsetDateTime;
  *         Represents provider configurations.
  */
 public record ProviderConfiguration(
-                Long providerConfigurationId,
-                Short signatureProviderId,
-                Short environmentCd,
-                String apiUrl,
-                String healthUrl,
-                Integer timeoutMs,
-                Short retryCount,
-                String apiKey,
-                String secret,
-                String certificateReference,
-                OffsetDateTime startTime,
-                OffsetDateTime endTime,
-                OffsetDateTime createdAt,
-                OffsetDateTime updatedAt,
-                String updateInfo) {
+        Long providerConfigurationId,
+        Short signatureProviderId,
+        Short applicationId,
+        Short environmentCd,
+        String apiUrl,
+        String healthUrl,
+        Integer timeoutMs,
+        Short retryCount,
+        String apiKey,
+        String secret,
+        String certificateReference,
+        OffsetDateTime startTime,
+        OffsetDateTime endTime,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
+        String updateInfo) {
 }

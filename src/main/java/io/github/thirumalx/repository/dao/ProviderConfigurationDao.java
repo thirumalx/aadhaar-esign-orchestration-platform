@@ -30,6 +30,7 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcClient.sql(getSql(CREATE))
                 .param("signature_provider_id", providerConfiguration.signatureProviderId())
+                .param("application_id", providerConfiguration.applicationId())
                 .param("environment_cd", providerConfiguration.environmentCd())
                 .param("api_url", providerConfiguration.apiUrl())
                 .param("health_url", providerConfiguration.healthUrl())
@@ -63,6 +64,7 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
     public int update(ProviderConfiguration providerConfiguration) {
         return jdbcClient.sql(getSql(UPDATE))
                 .param("signature_provider_id", providerConfiguration.signatureProviderId())
+                .param("application_id", providerConfiguration.applicationId())
                 .param("environment_cd", providerConfiguration.environmentCd())
                 .param("api_url", providerConfiguration.apiUrl())
                 .param("health_url", providerConfiguration.healthUrl())
