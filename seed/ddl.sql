@@ -42,6 +42,9 @@ CREATE TABLE public.application (
 ALTER TABLE public.application OWNER TO postgres;
 -- ddl-end --
 
+INSERT INTO public.application (application_id, application_name, application_code, webhook_url, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'IU', E'iu', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+-- ddl-end --
+
 -- object: public.signature_provider | type: TABLE --
 -- DROP TABLE IF EXISTS public.signature_provider CASCADE;
 CREATE TABLE public.signature_provider (
@@ -58,27 +61,27 @@ CREATE TABLE public.signature_provider (
 ALTER TABLE public.signature_provider OWNER TO postgres;
 -- ddl-end --
 
--- object: lookup.provider_cd | type: TABLE --
--- DROP TABLE IF EXISTS lookup.provider_cd CASCADE;
-CREATE TABLE lookup.provider_cd (
-	provider_cd smallint NOT NULL,
+-- object: lookup.provider_capability_cd | type: TABLE --
+-- DROP TABLE IF EXISTS lookup.provider_capability_cd CASCADE;
+CREATE TABLE lookup.provider_capability_cd (
+	provider_capability_cd smallint NOT NULL,
 	code varchar(250) NOT NULL,
 	start_time timestamptz NOT NULL DEFAULT current_timestamp,
 	end_time timestamptz NOT NULL DEFAULT 'infinity'::timestamp,
 	created_at timestamptz NOT NULL DEFAULT current_timestamp,
 	updated_at timestamptz NOT NULL DEFAULT current_timestamp,
 	update_info text,
-	CONSTRAINT provider_cd_pk PRIMARY KEY (provider_cd)
+	CONSTRAINT provider_capability_cd_pk PRIMARY KEY (provider_capability_cd)
 );
 -- ddl-end --
-ALTER TABLE lookup.provider_cd OWNER TO postgres;
+ALTER TABLE lookup.provider_capability_cd OWNER TO postgres;
 -- ddl-end --
 
-INSERT INTO lookup.provider_cd (provider_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'AADHAAR_ESIGN', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_cd (provider_capability_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'AADHAAR_ESIGN', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
-INSERT INTO lookup.provider_cd (provider_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'2', E'DSC', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_cd (provider_capability_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'2', E'DSC', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
-INSERT INTO lookup.provider_cd (provider_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'3', E'ESTAMP', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_cd (provider_capability_cd, code, start_time, end_time, created_at, updated_at, update_info) VALUES (E'3', E'ESTAMP', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
 
 -- object: lookup.locale_cd | type: TABLE --
@@ -103,12 +106,12 @@ ALTER TABLE lookup.locale_cd OWNER TO postgres;
 INSERT INTO lookup.locale_cd (locale_cd, code, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'en_IN', E'English(India)', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
 
--- object: lookup.provider_locale | type: TABLE --
--- DROP TABLE IF EXISTS lookup.provider_locale CASCADE;
-CREATE TABLE lookup.provider_locale (
-	provider_cd smallint NOT NULL,
-	locale_cd smallint NOT NULL,
+-- object: lookup.provider_capability_locale | type: TABLE --
+-- DROP TABLE IF EXISTS lookup.provider_capability_locale CASCADE;
+CREATE TABLE lookup.provider_capability_locale (
+	provider_capability_cd smallint NOT NULL,
 	description varchar(100) NOT NULL,
+	locale_cd smallint NOT NULL,
 	start_time timestamptz NOT NULL DEFAULT current_timestamp,
 	end_time timestamptz NOT NULL DEFAULT 'infinity'::timestamp,
 	created_at timestamptz NOT NULL DEFAULT current_timestamp,
@@ -117,29 +120,29 @@ CREATE TABLE lookup.provider_locale (
 
 );
 -- ddl-end --
-ALTER TABLE lookup.provider_locale OWNER TO postgres;
+ALTER TABLE lookup.provider_capability_locale OWNER TO postgres;
 -- ddl-end --
 
-INSERT INTO lookup.provider_locale (provider_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'1', E'Aadhaar eSign', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_locale (provider_capability_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'1', E'1', E'Aadhaar eSign', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
-INSERT INTO lookup.provider_locale (provider_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'2', E'1', E'Digital Signature Certificate', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_locale (provider_capability_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'2', E'1', E'Digital Signature Certificate', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
-INSERT INTO lookup.provider_locale (provider_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'3', E'1', E'eStamp', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO lookup.provider_capability_locale (provider_capability_cd, locale_cd, description, start_time, end_time, created_at, updated_at, update_info) VALUES (E'3', E'1', E'eStamp', DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
 
--- object: provider_cd_fk | type: CONSTRAINT --
--- ALTER TABLE lookup.provider_locale DROP CONSTRAINT IF EXISTS provider_cd_fk CASCADE;
-ALTER TABLE lookup.provider_locale ADD CONSTRAINT provider_cd_fk FOREIGN KEY (provider_cd)
-REFERENCES lookup.provider_cd (provider_cd) MATCH FULL
+-- object: provider_capability_cd_fk | type: CONSTRAINT --
+-- ALTER TABLE lookup.provider_capability_locale DROP CONSTRAINT IF EXISTS provider_capability_cd_fk CASCADE;
+ALTER TABLE lookup.provider_capability_locale ADD CONSTRAINT provider_capability_cd_fk FOREIGN KEY (provider_capability_cd)
+REFERENCES lookup.provider_capability_cd (provider_capability_cd) MATCH FULL
 ON DELETE CASCADE ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: provider_locale_provider_cd_idx | type: INDEX --
--- DROP INDEX IF EXISTS lookup.provider_locale_provider_cd_idx CASCADE;
-CREATE INDEX provider_locale_provider_cd_idx ON lookup.provider_locale
+-- object: provider_capability_locale_provider_capability_cd_idx | type: INDEX --
+-- DROP INDEX IF EXISTS lookup.provider_capability_locale_provider_capability_cd_idx CASCADE;
+CREATE INDEX provider_capability_locale_provider_capability_cd_idx ON lookup.provider_capability_locale
 USING btree
 (
-	provider_cd
+	provider_capability_cd
 )
 WITH (FILLFACTOR = 90);
 -- ddl-end --
@@ -149,7 +152,7 @@ WITH (FILLFACTOR = 90);
 CREATE TABLE public.provider_capability (
 	provider_capability_id serial NOT NULL,
 	signature_provider_id smallint NOT NULL,
-	provider_cd smallint NOT NULL,
+	provider_capability_cd smallint NOT NULL,
 	start_time timestamptz NOT NULL DEFAULT current_timestamp,
 	end_time timestamptz NOT NULL DEFAULT 'infinity'::timestamp,
 	created_at timestamptz NOT NULL DEFAULT current_timestamp,
@@ -164,19 +167,19 @@ COMMENT ON COLUMN public.provider_capability.end_time IS E'same as updated_at';
 ALTER TABLE public.provider_capability OWNER TO postgres;
 -- ddl-end --
 
--- object: provider_cd_fk | type: CONSTRAINT --
--- ALTER TABLE public.provider_capability DROP CONSTRAINT IF EXISTS provider_cd_fk CASCADE;
-ALTER TABLE public.provider_capability ADD CONSTRAINT provider_cd_fk FOREIGN KEY (provider_cd)
-REFERENCES lookup.provider_cd (provider_cd) MATCH FULL
+-- object: provider_capability_cd_fk | type: CONSTRAINT --
+-- ALTER TABLE public.provider_capability DROP CONSTRAINT IF EXISTS provider_capability_cd_fk CASCADE;
+ALTER TABLE public.provider_capability ADD CONSTRAINT provider_capability_cd_fk FOREIGN KEY (provider_capability_cd)
+REFERENCES lookup.provider_capability_cd (provider_capability_cd) MATCH FULL
 ON DELETE CASCADE ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: provider_capability_provider_cd_idx | type: INDEX --
--- DROP INDEX IF EXISTS public.provider_capability_provider_cd_idx CASCADE;
-CREATE INDEX provider_capability_provider_cd_idx ON public.provider_capability
+-- object: provider_capability_provider_capability_cd_idx | type: INDEX --
+-- DROP INDEX IF EXISTS public.provider_capability_provider_capability_cd_idx CASCADE;
+CREATE INDEX provider_capability_provider_capability_cd_idx ON public.provider_capability
 USING btree
 (
-	provider_cd
+	provider_capability_cd
 )
 WITH (FILLFACTOR = 90);
 -- ddl-end --
@@ -267,6 +270,7 @@ WITH (FILLFACTOR = 90);
 CREATE TABLE public.provider_configuration (
 	provider_configuration_id bigserial NOT NULL,
 	signature_provider_id smallint NOT NULL,
+	application_id bigint,
 	environment_cd smallint NOT NULL,
 	api_url text NOT NULL,
 	health_url text,
@@ -325,15 +329,15 @@ WITH (FILLFACTOR = 90);
 -- ddl-end --
 
 -- object: locale_cd_fk | type: CONSTRAINT --
--- ALTER TABLE lookup.provider_locale DROP CONSTRAINT IF EXISTS locale_cd_fk CASCADE;
-ALTER TABLE lookup.provider_locale ADD CONSTRAINT locale_cd_fk FOREIGN KEY (locale_cd)
+-- ALTER TABLE lookup.provider_capability_locale DROP CONSTRAINT IF EXISTS locale_cd_fk CASCADE;
+ALTER TABLE lookup.provider_capability_locale ADD CONSTRAINT locale_cd_fk FOREIGN KEY (locale_cd)
 REFERENCES lookup.locale_cd (locale_cd) MATCH FULL
 ON DELETE CASCADE ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: provider_locale_locale_cd_idx | type: INDEX --
--- DROP INDEX IF EXISTS lookup.provider_locale_locale_cd_idx CASCADE;
-CREATE INDEX provider_locale_locale_cd_idx ON lookup.provider_locale
+-- object: provider_capability_locale_locale_cd_idx | type: INDEX --
+-- DROP INDEX IF EXISTS lookup.provider_capability_locale_locale_cd_idx CASCADE;
+CREATE INDEX provider_capability_locale_locale_cd_idx ON lookup.provider_capability_locale
 USING btree
 (
 	locale_cd
@@ -614,6 +618,23 @@ CREATE INDEX signature_attempt_status_cd_idx ON public.signature_attempt
 USING btree
 (
 	status_cd
+)
+WITH (FILLFACTOR = 90);
+-- ddl-end --
+
+-- object: application_fk | type: CONSTRAINT --
+-- ALTER TABLE public.provider_configuration DROP CONSTRAINT IF EXISTS application_fk CASCADE;
+ALTER TABLE public.provider_configuration ADD CONSTRAINT application_fk FOREIGN KEY (application_id)
+REFERENCES public.application (application_id) MATCH FULL
+ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: provider_configuration_application_idx | type: INDEX --
+-- DROP INDEX IF EXISTS public.provider_configuration_application_idx CASCADE;
+CREATE INDEX provider_configuration_application_idx ON public.provider_configuration
+USING btree
+(
+	application_id
 )
 WITH (FILLFACTOR = 90);
 -- ddl-end --
