@@ -8,6 +8,7 @@ import java.util.List;
  *         Signature provider repository interface.
  */
 public interface SignatureProviderRepository {
+
     Short save(SignatureProvider signatureProvider);
 
     SignatureProvider findById(Short id);
@@ -19,4 +20,6 @@ public interface SignatureProviderRepository {
     int delete(Short id);
 
     SignatureProvider findTopPriority();
+
+    SignatureProvider findByApplicationId(String applicationId);
 }

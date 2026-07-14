@@ -12,6 +12,7 @@ SignatureProvider.list=SELECT * FROM public.signature_provider ORDER BY signatur
 SignatureProvider.update=UPDATE public.signature_provider SET provider_code = :provider_code, provider_name = :provider_name, priority = :priority, updated_at = current_timestamp WHERE signature_provider_id = :signature_provider_id
 SignatureProvider.delete=DELETE FROM public.signature_provider WHERE signature_provider_id = :signature_provider_id
 SignatureProvider.findTopPriority=SELECT * FROM public.signature_provider ORDER BY priority ASC LIMIT 1
+SignatureProvider.findByApplicationId=SELECT sp.* FROM public.signature_provider sp INNER JOIN public.provider_configuration pc ON sp.signature_provider_id = pc.signature_provider_id INNER JOIN public.application a ON a.application_id = pc.application_id WHERE a.application_code = :application_id LIMIT 1
 
 # ProviderCapability Queries
 ProviderCapability.create=INSERT INTO public.provider_capability (signature_provider_id, provider_cd) VALUES (:signature_provider_id, :provider_cd)

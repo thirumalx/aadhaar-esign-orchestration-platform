@@ -58,7 +58,16 @@ CREATE TABLE public.signature_provider (
 	CONSTRAINT uk_signature_provider_provider_code UNIQUE (provider_code)
 );
 -- ddl-end --
+COMMENT ON TABLE public.signature_provider IS E'eSign Service Provider  (ESP)';
+-- ddl-end --
 ALTER TABLE public.signature_provider OWNER TO postgres;
+-- ddl-end --
+
+INSERT INTO public.signature_provider (signature_provider_id, provider_code, provider_name, priority, created_at, updated_at) VALUES (E'1', E'cdac', E'Center for Development of Advanced Computing', DEFAULT, DEFAULT, DEFAULT);
+-- ddl-end --
+INSERT INTO public.signature_provider (signature_provider_id, provider_code, provider_name, priority, created_at, updated_at) VALUES (E'2', E'protean', E'proteantech', DEFAULT, DEFAULT, DEFAULT);
+-- ddl-end --
+INSERT INTO public.signature_provider (signature_provider_id, provider_code, provider_name, priority, created_at, updated_at) VALUES (E'3', E'eMudhra', E'eMudhra', DEFAULT, DEFAULT, DEFAULT);
 -- ddl-end --
 
 -- object: lookup.provider_capability_cd | type: TABLE --

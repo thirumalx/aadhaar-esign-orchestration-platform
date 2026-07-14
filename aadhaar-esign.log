@@ -1,0 +1,62 @@
+2026-07-14T15:24:30.989+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Starting AadhaarEsignApplication using Java 25 with PID 14732 (C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform\target\classes started by ThirumalM in C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform)
+2026-07-14T15:24:30.992+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : The following 1 profile is active: "DEV"
+2026-07-14T15:24:31.056+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-07-14T15:24:31.057+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-07-14T15:24:33.461+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 2214 (http)
+2026-07-14T15:24:33.489+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-14T15:24:33.490+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-14T15:24:33.537+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2479 ms
+2026-07-14T15:24:34.821+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-07-14T15:24:34.979+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 2214 (http) with context path '/'
+2026-07-14T15:24:34.993+05:30  INFO 14732 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Started AadhaarEsignApplication in 4.606 seconds (process running for 6.044)
+2026-07-14T15:24:35.623+05:30  INFO 14732 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-14T15:24:35.624+05:30  INFO 14732 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-14T15:24:35.626+05:30  INFO 14732 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-07-14T16:29:33.300+05:30  INFO 14732 --- [aadhaar-esign] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-07-14T16:29:33.536+05:30  INFO 14732 --- [aadhaar-esign] [Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-14T16:29:59.458+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Starting AadhaarEsignApplication using Java 25 with PID 22872 (C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform\target\classes started by ThirumalM in C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform)
+2026-07-14T16:29:59.464+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : The following 1 profile is active: "DEV"
+2026-07-14T16:29:59.534+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-07-14T16:29:59.535+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-07-14T16:30:01.711+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 2214 (http)
+2026-07-14T16:30:01.724+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-14T16:30:01.725+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-14T16:30:01.765+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2229 ms
+2026-07-14T16:30:02.922+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-07-14T16:30:03.056+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 2214 (http) with context path '/'
+2026-07-14T16:30:03.067+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Started AadhaarEsignApplication in 4.125 seconds (process running for 5.325)
+2026-07-14T16:30:04.689+05:30  INFO 22872 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-14T16:30:04.690+05:30  INFO 22872 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-14T16:30:04.692+05:30  INFO 22872 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-07-14T16:41:36.602+05:30  INFO 22872 --- [aadhaar-esign] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 36 class path changes (0 additions, 0 deletions, 36 modifications)
+2026-07-14T16:41:36.611+05:30  INFO 22872 --- [aadhaar-esign] [Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-14T16:41:36.652+05:30  INFO 22872 --- [aadhaar-esign] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-07-14T16:41:36.993+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Starting AadhaarEsignApplication using Java 25 with PID 22872 (C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform\target\classes started by ThirumalM in C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform)
+2026-07-14T16:41:36.995+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : The following 1 profile is active: "DEV"
+2026-07-14T16:41:38.025+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 2214 (http)
+2026-07-14T16:41:38.027+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-14T16:41:38.027+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-14T16:41:38.075+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1070 ms
+2026-07-14T16:41:38.471+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-07-14T16:41:38.512+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 2214 (http) with context path '/'
+2026-07-14T16:41:38.516+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Started AadhaarEsignApplication in 1.664 seconds (process running for 700.773)
+2026-07-14T16:41:38.522+05:30  INFO 22872 --- [aadhaar-esign] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-07-14T16:43:10.835+05:30  INFO 22872 --- [aadhaar-esign] [tomcat-handler-0] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-14T16:43:10.837+05:30  INFO 22872 --- [aadhaar-esign] [tomcat-handler-0] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-14T16:43:10.841+05:30  INFO 22872 --- [aadhaar-esign] [tomcat-handler-0] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-07-14T16:43:28.510+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Starting AadhaarEsignApplication using Java 25 with PID 27640 (C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform\target\classes started by ThirumalM in C:\Users\ThirumalM\git\aadhaar-esign-orchestration-platform)
+2026-07-14T16:43:28.515+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : The following 1 profile is active: "DEV"
+2026-07-14T16:43:28.584+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-07-14T16:43:28.585+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-07-14T16:43:30.760+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 2214 (http)
+2026-07-14T16:43:30.789+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-14T16:43:30.790+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-14T16:43:30.849+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2263 ms
+2026-07-14T16:43:32.481+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-07-14T16:43:32.670+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 2214 (http) with context path '/'
+2026-07-14T16:43:32.686+05:30  INFO 27640 --- [aadhaar-esign] [restartedMain] i.g.thirumalx.AadhaarEsignApplication    : Started AadhaarEsignApplication in 4.684 seconds (process running for 5.796)
+2026-07-14T16:43:32.703+05:30  WARN 27640 --- [aadhaar-esign] [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-07-14T16:43:32.704+05:30  WARN 27640 --- [aadhaar-esign] [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-07-14T16:43:33.464+05:30  INFO 27640 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-14T16:43:33.466+05:30  INFO 27640 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-14T16:43:33.469+05:30  INFO 27640 --- [aadhaar-esign] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms

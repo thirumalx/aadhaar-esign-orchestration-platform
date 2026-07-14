@@ -77,4 +77,14 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
                 .query(SignatureProvider.class)
                 .single();
     }
+
+    @Override
+    public SignatureProvider findByApplicationId(String applicationId) {
+        return jdbcClient.sql(getSql("SignatureProvider.findByApplicationId"))
+                .param("application_id", applicationId)
+                .query(SignatureProvider.class)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 }

@@ -21,9 +21,16 @@ public class EsignOrchestratorService {
     public String initiateEsign(EsignDto esignDto) {
         String providerCode = esignDto.providerCode();
         
-        // If providerCode is not passed, fetch the highest priority provider from the database
+        // If providerCode is not passed, fetch based on applicationId or fallback to highest priority
         if (providerCode == null || providerCode.trim().isEmpty()) {
-            SignatureProvider preferredProvider = signatureProviderRepository.findTopPriority();
+            SignatureProvider preferredProvider = null;
+            if (esignDto.applicationId() != null && !esignDto.applicationId().trim().isEmpty()) {
+                preferredProvider = signatureProviderRepository.findByApplicationId(esignDto.applicationId());
+            }
+            if (preferredProvider == null) {
+                preferredProvider = signatureProviderRepository.findTopPriority();
+            }
+            
             if (preferredProvider == null) {
                 throw new IllegalStateException("No default eSign provider configured.");
             }

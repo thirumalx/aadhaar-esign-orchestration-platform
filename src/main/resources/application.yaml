@@ -22,7 +22,7 @@ logging:
     "org.springframework.jdbc.core": DEBUG
   file:
     name: aadhaar-esign.log
-    path: ./logs
+    path: logs/
   logback: 
     rollingpolicy: 
       max-history: 10
