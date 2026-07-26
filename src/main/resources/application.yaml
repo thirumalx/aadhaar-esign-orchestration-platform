@@ -8,7 +8,7 @@ spring:
   mvc:
     apiversion:
       use:
-        header: true 
+        header: X-API-Version 
   threads:
     virtual:
       enabled: true

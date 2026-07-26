@@ -19,7 +19,7 @@ public class EsignController {
         this.orchestratorService = orchestratorService;
     }
 
-    @PostMapping("/initiate")
+    @PostMapping(value = "/initiate", version = "1.0.0")
     public ResponseEntity<String> initiateEsign(@RequestBody EsignDto esignDto) {
         String response = orchestratorService.initiateEsign(esignDto);
         return ResponseEntity.ok(response);
