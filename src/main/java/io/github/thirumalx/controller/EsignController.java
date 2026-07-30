@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.thirumalx.dto.EsignDto;
+import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.service.EsignOrchestratorService;
 
 @RestController
@@ -20,8 +21,8 @@ public class EsignController {
     }
 
     @PostMapping(value = "/initiate", version = "1.0.0")
-    public ResponseEntity<String> initiateEsign(@RequestBody EsignDto esignDto) {
-        String response = orchestratorService.initiateEsign(esignDto);
+    public ResponseEntity<EsignResponseDto> initiateEsign(@RequestBody EsignDto esignDto) {
+        EsignResponseDto response = orchestratorService.initiateEsign(esignDto);
         return ResponseEntity.ok(response);
     }
 }

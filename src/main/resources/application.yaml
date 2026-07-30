@@ -20,6 +20,7 @@ server:
 logging:
   level:
     "org.springframework.jdbc.core": DEBUG
+    "org.springframework.web": DEBUG
   file:
     name: logs/aadhaar-esign.log
   logback: 

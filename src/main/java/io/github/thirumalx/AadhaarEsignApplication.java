@@ -4,8 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * Main application class.
+ * 
  * @author Thirumal M
- *         Main application class.
  */
 @SpringBootApplication
 public class AadhaarEsignApplication {

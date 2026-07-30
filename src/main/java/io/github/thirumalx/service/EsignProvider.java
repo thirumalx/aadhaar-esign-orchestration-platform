@@ -1,6 +1,7 @@
 package io.github.thirumalx.service;
 
 import io.github.thirumalx.dto.EsignDto;
+import io.github.thirumalx.dto.EsignResponseDto;
 
 /**
  * @author Thirumal
@@ -22,5 +23,5 @@ public interface EsignProvider {
      * @param esignDto the eSign request data
      * @return a response string or object depending on implementation needs
      */
-    String initiateSign(EsignDto esignDto);
+    EsignResponseDto initiateSign(EsignDto esignDto);
 }
