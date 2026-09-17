@@ -17,27 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.DigestMethod;
-import javax.xml.crypto.dsig.Reference;
-import javax.xml.crypto.dsig.SignatureMethod;
-import javax.xml.crypto.dsig.SignedInfo;
-import javax.xml.crypto.dsig.Transform;
-import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.crypto.dsig.XMLSignatureFactory;
-import javax.xml.crypto.dsig.dom.DOMSignContext;
-import javax.xml.crypto.dsig.keyinfo.KeyInfo;
-import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
-import javax.xml.crypto.dsig.keyinfo.X509Data;
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +45,11 @@ import io.github.thirumalx.service.EsignProvider;
 public class CdacEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(CdacEsignProvider.class);
+    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
+
+    public CdacEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService) {
+        this.xmlSignerService = xmlSignerService;
+    }
 
     @Value("${cdac.aspId}")
     private String aspId;
@@ -149,45 +133,8 @@ public class CdacEsignProvider implements EsignProvider {
             String docHash = "<Docs>\n<InputHash docInfo=\"" + docInfo + "\" hashAlgorithm=\"" + hashAlgorithm + "\" id=\"1\">" + sha256hex + "</InputHash>\n</Docs>\n</Esign>";
             String eSignXmlStr = s1 + "\n" + s2 + docHash;
 
-            // 3. Sign the XML
-            XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
-            Reference ref = fac.newReference("", fac.newDigestMethod(DigestMethod.SHA1, null),
-                    Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)),
-                    null, null);
-
-            SignedInfo si = fac.newSignedInfo(
-                    fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null),
-                    fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
-
-            KeyStore ks = KeyStore.getInstance("PKCS12");
-            try (InputStream ksIs = keystorePath.getInputStream()) {
-                ks.load(ksIs, keystorePassword.toCharArray());
-            }
-            String alias = ks.aliases().nextElement();
-            PrivateKey privateKey = (PrivateKey) ks.getKey(alias, keystorePassword.toCharArray());
-            X509Certificate cert = (X509Certificate) ks.getCertificate(alias);
-
-            KeyInfoFactory kif = fac.getKeyInfoFactory();
-            List<Object> x509Content = new ArrayList<>();
-            x509Content.add(cert.getSubjectX500Principal().getName());
-            x509Content.add(cert);
-            X509Data xd = kif.newX509Data(x509Content);
-            KeyInfo ki = kif.newKeyInfo(Collections.singletonList(xd));
-
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            Document docToSign = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(eSignXmlStr.getBytes(StandardCharsets.UTF_8)));
-
-            DOMSignContext dsc = new DOMSignContext(privateKey, docToSign.getDocumentElement());
-            XMLSignature signature = fac.newXMLSignature(si, ki);
-            signature.sign(dsc);
-
-            StringWriter writer = new StringWriter();
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer trans = tf.newTransformer();
-            trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            trans.transform(new DOMSource(docToSign), new StreamResult(writer));
-            String signedXml = writer.getBuffer().toString();
+            // 3. Sign the XML natively using our central XmlSignerService
+            String signedXml = xmlSignerService.signXml(eSignXmlStr);
 
             return new EsignResponseDto(signedXml, txn, "application/xml", esignFormUrl, null);
         } catch (Exception e) {

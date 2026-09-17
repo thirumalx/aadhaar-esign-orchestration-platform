@@ -1,5 +1,7 @@
 package io.github.thirumalx.dto;
 
+import java.time.LocalDate;
+
 /**
  * @author Thirumal
  *         EsignDto represents the data transfer object for eSign requests.
@@ -22,7 +24,7 @@ package io.github.thirumalx.dto;
  * @param failureUrl          - Failure Url (url to redirect on failure)
  */
 public record EsignDto(String applicationId, String signId,
-        String firstName, String middleName, String lastName, String dob,
+        String firstName, String middleName, String lastName, LocalDate dob,
         String location,
         String fileSourcePath, String fileDestinationPath,
         String providerCode,

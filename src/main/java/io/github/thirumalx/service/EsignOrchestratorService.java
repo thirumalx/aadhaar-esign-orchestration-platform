@@ -8,7 +8,11 @@ import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.model.SignatureProvider;
 import io.github.thirumalx.repository.SignatureProviderRepository;
-
+/**
+ * @author Thirumal
+ * Service class responsible for orchestrating the eSign process.
+ * EsignOrchestratorService
+ */
 @Service
 public class EsignOrchestratorService {
 

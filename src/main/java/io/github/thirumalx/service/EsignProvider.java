@@ -11,15 +11,14 @@ public interface EsignProvider {
 
     /**
      * Identifies the provider this implementation handles.
-     * For example, "protean", "cdac", etc.
-     * 
+     * For example, "protean", "cdac", "eMudhra", etc.
      * @return the provider code
      */
     String getProviderCode();
 
     /**
      * Initiates the eSign process for this specific provider.
-     * 
+     *
      * @param esignDto the eSign request data
      * @return a response string or object depending on implementation needs
      */
