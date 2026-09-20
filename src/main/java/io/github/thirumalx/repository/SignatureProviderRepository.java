@@ -2,6 +2,7 @@ package io.github.thirumalx.repository;
 
 import io.github.thirumalx.model.SignatureProvider;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Thirumal M
@@ -21,5 +22,5 @@ public interface SignatureProviderRepository {
 
     SignatureProvider findTopPriority();
 
-    SignatureProvider findByApplicationId(String applicationId);
+    Optional<SignatureProvider> findByApplicationId(Long applicationId);
 }

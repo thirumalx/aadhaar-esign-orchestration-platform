@@ -79,12 +79,12 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
     }
 
     @Override
-    public SignatureProvider findByApplicationId(String applicationId) {
-        return jdbcClient.sql(getSql("SignatureProvider.findByApplicationId"))
+    public Optional<SignatureProvider> findByApplicationId(Long applicationId) {
+        return Optional.ofNullable(jdbcClient.sql(getSql("SignatureProvider.findByApplicationId"))
                 .param("application_id", applicationId)
                 .query(SignatureProvider.class)
                 .stream()
                 .findFirst()
-                .orElse(null);
+                .orElse(null));
     }
 }

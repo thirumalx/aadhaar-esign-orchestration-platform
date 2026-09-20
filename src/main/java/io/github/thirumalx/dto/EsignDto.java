@@ -23,7 +23,7 @@ import java.time.LocalDate;
  * @param successUrl          - Success Url (url to redirect on success)
  * @param failureUrl          - Failure Url (url to redirect on failure)
  */
-public record EsignDto(String applicationId, String signId,
+public record EsignDto(Long applicationId, String signId,
         String firstName, String middleName, String lastName, LocalDate dob,
         String location,
         String fileSourcePath, String fileDestinationPath,

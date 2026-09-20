@@ -2,6 +2,7 @@ package io.github.thirumalx.repository;
 
 import io.github.thirumalx.model.Application;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Thirumal M
@@ -10,11 +11,13 @@ import java.util.List;
 public interface ApplicationRepository {
     Long save(Application application);
 
-    Application findById(Long id);
+    Optional<Application> findById(Long id);
 
     List<Application> findAll();
 
     int update(Application application);
 
     int delete(Long id);
+
+    Optional<Application> findByCode(String applicationCode);
 }

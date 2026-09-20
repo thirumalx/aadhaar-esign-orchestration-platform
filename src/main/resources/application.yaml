@@ -19,8 +19,9 @@ server:
 
 logging:
   level:
-    "org.springframework.jdbc.core": DEBUG
-    "org.springframework.web": DEBUG
+    "[org.springframework.jdbc.core]": DEBUG
+    "[org.springframework.web]": DEBUG
+    "[io.github.thirumalx]": DEBUG
   file:
     name: logs/aadhaar-esign.log
   logback: 
@@ -50,3 +51,12 @@ management:
 #metrics
 #spring.metrics.enable-jvm=true
 #spring.metrics.enable-system=true
+
+esign:
+  emudhra:
+    keystore:
+      path: "classpath:keystore/asp-keystore.p12"
+      password: "changeit"
+      alias: "asp-cert"
+      type: "PKCS12"
+    aspId: "PRODNESLNEW"

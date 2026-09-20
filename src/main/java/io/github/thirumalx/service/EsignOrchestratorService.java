@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
+import io.github.thirumalx.model.Application;
 import io.github.thirumalx.model.SignatureProvider;
+import io.github.thirumalx.repository.ApplicationRepository;
 import io.github.thirumalx.repository.SignatureProviderRepository;
 /**
  * @author Thirumal
@@ -20,11 +22,14 @@ public class EsignOrchestratorService {
 
     private final EsignProviderFactory providerFactory;
     private final SignatureProviderRepository signatureProviderRepository;
+    private final ApplicationRepository applicationRepository;
 
     public EsignOrchestratorService(EsignProviderFactory providerFactory,
-            SignatureProviderRepository signatureProviderRepository) {
+            SignatureProviderRepository signatureProviderRepository,
+            ApplicationRepository applicationRepository) {
         this.providerFactory = providerFactory;
         this.signatureProviderRepository = signatureProviderRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     /**
@@ -36,12 +41,17 @@ public class EsignOrchestratorService {
     public EsignResponseDto initiateEsign(EsignDto esignDto) {
         logger.debug("Initiate eSign request for application: {}", esignDto.applicationId());
         String providerCode = esignDto.providerCode();
+        Long applicationId = esignDto.applicationId();
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("Application not found for ID: " + applicationId));
+        logger.debug("Application found: {}", application.applicationName());
         // If providerCode is not passed, fetch based on applicationId or fallback to
         // highest priority
         if (providerCode == null || providerCode.trim().isEmpty()) {
             SignatureProvider preferredProvider = null;
-            if (esignDto.applicationId() != null && !esignDto.applicationId().trim().isEmpty()) {
-                preferredProvider = signatureProviderRepository.findByApplicationId(esignDto.applicationId());
+            if (esignDto.applicationId() != null) {
+                preferredProvider = signatureProviderRepository.findByApplicationId(applicationId)
+                        .orElse(null);
             }
             if (preferredProvider == null) {
                 preferredProvider = signatureProviderRepository.findTopPriority();

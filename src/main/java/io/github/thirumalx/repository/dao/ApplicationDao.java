@@ -39,11 +39,19 @@ public class ApplicationDao extends GenericDao implements ApplicationRepository 
     }
 
     @Override
-    public Application findById(Long id) {
-        return jdbcClient.sql(getSql(GET))
+    public Optional<Application> findById(Long id) {
+        return Optional.ofNullable(jdbcClient.sql(getSql(GET))
                 .param(PK, id)
                 .query(Application.class)
-                .single();
+                .single());
+    }
+
+    @Override
+    public Optional<Application> findByCode(String applicationCode) {
+        return Optional.ofNullable(jdbcClient.sql("SELECT * FROM public.applications WHERE application_code = :application_code")
+                .param("application_code", applicationCode)
+                .query(Application.class)
+                .single());
     }
 
     @Override
