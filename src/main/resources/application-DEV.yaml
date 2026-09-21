@@ -1,7 +1,20 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/aadhaar_esign
+    url: jdbc:postgresql://65.2.215.40:5432/aadhaar_esign
     username: postgres
-    password: thirumal
+    password: TamilVendhan
 server:
   port: 2214
+
+cdac:
+  aspId: "NESL-12345"
+  authMode: "1"
+  ekycIdType: "A"
+  responseSigType: "pkcs7"
+  sc: "Y"
+  docInfo: "Document"
+  hashAlgorithm: "SHA256"
+  responseUrl: "http://localhost:2214/geteSignResponse"
+  keystorePath: file:/usr/share/certificates/NESL.pfx
+  keystorePassword: 12345
+  esignFormUrl: "https://esignservice.cdac.in/esign2.1/2.1/form/signdoc"
