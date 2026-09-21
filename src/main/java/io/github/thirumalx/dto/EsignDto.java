@@ -20,7 +20,9 @@ import java.time.LocalDate;
  *                            signed file)
  * @param providerCode        - Provider Code (Optional provider to use for
  *                            eSign)
- * @param successUrl          - Success Url (url to redirect on success)
+ * @param authMode            - Auth Mode (1 for OTP, 2 for Biometric, etc.)
+ * @param consent             - Consent mechanism (Y/N)
+ * @param successUrl          - Success Url (url to redirect on success - responseUrl)
  * @param failureUrl          - Failure Url (url to redirect on failure)
  */
 public record EsignDto(Long applicationId, String signId,
@@ -28,6 +30,7 @@ public record EsignDto(Long applicationId, String signId,
         String location,
         String fileSourcePath, String fileDestinationPath,
         String providerCode,
+        String authMode, String consent,
         String successUrl, String failureUrl) {
 
 }

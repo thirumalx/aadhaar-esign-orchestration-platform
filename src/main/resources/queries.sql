@@ -22,11 +22,12 @@ ProviderCapability.update=UPDATE public.provider_capability SET signature_provid
 ProviderCapability.delete=DELETE FROM public.provider_capability WHERE provider_capability_id = :provider_capability_id
 
 # ProviderConfiguration Queries
-ProviderConfiguration.create=INSERT INTO public.provider_configuration (signature_provider_id, environment_cd, api_url, health_url, timeout_ms, retry_count, api_key, secret, certificate_reference, update_info) VALUES (:signature_provider_id, :environment_cd, :api_url, :health_url, :timeout_ms, :retry_count, :api_key, :secret, :certificate_reference, :update_info)
+ProviderConfiguration.create=INSERT INTO public.provider_configuration (signature_provider_id, environment_cd, asp_id, api_url, health_url, timeout_ms, retry_count, api_key, secret, certificate_reference, update_info) VALUES (:signature_provider_id, :environment_cd, :asp_id, :api_url, :health_url, :timeout_ms, :retry_count, :api_key, :secret, :certificate_reference, :update_info)
 ProviderConfiguration.get=SELECT * FROM public.provider_configuration WHERE provider_configuration_id = :provider_configuration_id
 ProviderConfiguration.list=SELECT * FROM public.provider_configuration ORDER BY provider_configuration_id DESC
-ProviderConfiguration.update=UPDATE public.provider_configuration SET signature_provider_id = :signature_provider_id, environment_cd = :environment_cd, api_url = :api_url, health_url = :health_url, timeout_ms = :timeout_ms, retry_count = :retry_count, api_key = :api_key, secret = :secret, certificate_reference = :certificate_reference, update_info = :update_info, updated_at = current_timestamp WHERE provider_configuration_id = :provider_configuration_id
+ProviderConfiguration.update=UPDATE public.provider_configuration SET signature_provider_id = :signature_provider_id, environment_cd = :environment_cd, asp_id = :asp_id, api_url = :api_url, health_url = :health_url, timeout_ms = :timeout_ms, retry_count = :retry_count, api_key = :api_key, secret = :secret, certificate_reference = :certificate_reference, update_info = :update_info, updated_at = current_timestamp WHERE provider_configuration_id = :provider_configuration_id
 ProviderConfiguration.delete=DELETE FROM public.provider_configuration WHERE provider_configuration_id = :provider_configuration_id
+ProviderConfiguration.getByProviderCodeAndEnvironment=SELECT pc.* FROM public.provider_configuration pc INNER JOIN public.signature_provider sp ON sp.signature_provider_id = pc.signature_provider_id WHERE sp.provider_code = :provider_code AND pc.environment_cd = :environment_cd LIMIT 1
 
 # SignatureRequest Queries
 SignatureRequest.create=INSERT INTO public.signature_request (application_id, status_cd, reference_no, original_document_hash, original_document_path, request_payload, update_info) VALUES (:application_id, :status_cd, :reference_no, :original_document_hash, :original_document_path, :request_payload::jsonb, :update_info)

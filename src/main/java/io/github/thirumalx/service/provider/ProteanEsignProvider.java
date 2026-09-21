@@ -3,10 +3,13 @@ package io.github.thirumalx.service.provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.core.env.Environment;
 
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.service.EsignProvider;
+import io.github.thirumalx.service.XmlSignerService;
+import io.github.thirumalx.repository.ProviderConfigurationRepository;
 
 /**
  * @author Thirumal
@@ -17,13 +20,16 @@ public class ProteanEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(ProteanEsignProvider.class);
 
-    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
+    private final XmlSignerService xmlSignerService;
+    private final ProviderConfigurationRepository providerConfigurationRepository;
+    private final Environment environment;
 
-    @org.springframework.beans.factory.annotation.Value("${esign.protean.aspId:PRODNESLNEW}")
-    private String aspId;
-
-    public ProteanEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService) {
+    public ProteanEsignProvider(XmlSignerService xmlSignerService,
+                                ProviderConfigurationRepository providerConfigurationRepository,
+                                Environment environment) {
         this.xmlSignerService = xmlSignerService;
+        this.providerConfigurationRepository = providerConfigurationRepository;
+        this.environment = environment;
     }
 
     @Override
@@ -35,21 +41,35 @@ public class ProteanEsignProvider implements EsignProvider {
     public EsignResponseDto initiateSign(EsignDto esignDto) {
         logger.info("Initiating eSign with Protean for {}", esignDto.signId());
         try {
+            // Fetch configuration dynamically from DB based on environment
+            io.github.thirumalx.model.ProviderConfiguration config = providerConfigurationRepository
+                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment));
+            
+            if (config == null) {
+                throw new RuntimeException("Provider configuration not found for Protean in current environment");
+            }
+
+            String aspId = config.aspId();
+            String actionUrl = config.apiUrl();
+
             String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            String responseUrl = "https://your-app-domain.com/esign/callback/protean";
-            String txn = "ASP-" + System.currentTimeMillis();
+            String responseUrl = esignDto.successUrl() != null ? esignDto.successUrl() : "https://your-app-domain.com/esign/callback/protean";
+            String txn = esignDto.signId() != null ? esignDto.signId() : "ASP-" + System.currentTimeMillis();
+            String authMode = esignDto.authMode() != null ? esignDto.authMode() : "1"; // Default to OTP
+            String consent = esignDto.consent() != null ? esignDto.consent() : "Y";
+            
             String docHash = "4fd11688bf1aae8b964eccf96bd3ea363c8c259a960bd871d12dde36c7339a8f";
 
+            // Mapping to the CCA / C-DAC standard <Esign> tag
             String rawXml = String.format(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<Esign AuthMode=\"1\" aspId=\"%s\" ekycIdType=\"A\" responseSigType=\"PKCS7complete\" " +
-                    "responseUrl=\"%s\" sc=\"Y\" ts=\"%s\" txn=\"%s\" ver=\"2.1\">" +
+                    "<Esign AuthMode=\"%s\" aspId=\"%s\" ekycIdType=\"A\" responseSigType=\"PKCS7complete\" " +
+                    "responseUrl=\"%s\" sc=\"%s\" ts=\"%s\" txn=\"%s\" ver=\"2.1\">" +
                     "<Docs><InputHash docInfo=\"IND_ESIGN_REGISTRATION\" hashAlgorithm=\"SHA256\" id=\"1\">%s</InputHash></Docs>" +
                     "</Esign>", 
-                    aspId, responseUrl, timestamp, txn, docHash);
+                    authMode, aspId, responseUrl, consent, timestamp, txn, docHash);
 
             String signedXml = xmlSignerService.signXml(rawXml);
-            String actionUrl = "https://esign.nsdl.com/AadhaareSign.jsp"; // Placeholder Protean URL
 
             return new EsignResponseDto(signedXml, txn, "application/xml", actionUrl, null);
 

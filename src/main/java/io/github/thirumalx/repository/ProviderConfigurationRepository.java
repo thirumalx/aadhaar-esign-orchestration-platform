@@ -12,6 +12,8 @@ public interface ProviderConfigurationRepository {
 
     ProviderConfiguration findById(Long id);
 
+    ProviderConfiguration findByProviderCodeAndEnvironment(String providerCode, Short environmentCd);
+
     List<ProviderConfiguration> findAll();
 
     int update(ProviderConfiguration providerConfiguration);

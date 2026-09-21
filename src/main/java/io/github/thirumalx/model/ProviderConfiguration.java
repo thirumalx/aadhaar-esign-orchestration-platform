@@ -11,6 +11,7 @@ public record ProviderConfiguration(
         Short signatureProviderId,
         Short applicationId,
         Short environmentCd,
+        String aspId,
         String apiUrl,
         String healthUrl,
         Integer timeoutMs,

@@ -23,4 +23,19 @@ public interface EsignProvider {
      * @return a response string or object depending on implementation needs
      */
     EsignResponseDto initiateSign(EsignDto esignDto);
+
+    /**
+     * Determines the environment code based on the active Spring profile.
+     * @param environment the Spring Environment
+     * @return 1 for DEV, 2 for UAT, 3 for PROD
+     */
+    default Short getEnvironmentCd(org.springframework.core.env.Environment environment) {
+        String[] activeProfiles = environment.getActiveProfiles();
+        if (activeProfiles.length > 0) {
+            String profile = activeProfiles[0].toLowerCase();
+            if (profile.contains("prod")) return 3;
+            if (profile.contains("uat")) return 2;
+        }
+        return 1; // Default to DEV
+    }
 }

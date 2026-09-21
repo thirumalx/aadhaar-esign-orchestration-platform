@@ -9,7 +9,6 @@ import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
 import io.github.thirumalx.exception.ResourceNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ProviderConfigurationDao extends GenericDao implements ProviderConfigurationRepository {
@@ -20,18 +19,20 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
 
     private static final String PK = "provider_configuration_id";
     private static final String CREATE = "ProviderConfiguration.create";
+    private static final String UPDATE = "ProviderConfiguration.update";
     private static final String GET = "ProviderConfiguration.get";
     private static final String LIST = "ProviderConfiguration.list";
-    private static final String UPDATE = "ProviderConfiguration.update";
     private static final String DELETE = "ProviderConfiguration.delete";
+    private static final String GET_BY_CODE_AND_ENV = "ProviderConfiguration.getByProviderCodeAndEnvironment";
 
     @Override
     public Long save(ProviderConfiguration providerConfiguration) {
-        KeyHolder holder = new GeneratedKeyHolder();
+        org.springframework.jdbc.support.KeyHolder holder = new org.springframework.jdbc.support.GeneratedKeyHolder();
         jdbcClient.sql(getSql(CREATE))
                 .param("signature_provider_id", providerConfiguration.signatureProviderId())
                 .param("application_id", providerConfiguration.applicationId())
                 .param("environment_cd", providerConfiguration.environmentCd())
+                .param("asp_id", providerConfiguration.aspId())
                 .param("api_url", providerConfiguration.apiUrl())
                 .param("health_url", providerConfiguration.healthUrl())
                 .param("timeout_ms", providerConfiguration.timeoutMs())
@@ -41,14 +42,26 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
                 .param("certificate_reference", providerConfiguration.certificateReference())
                 .param("update_info", providerConfiguration.updateInfo())
                 .update(holder, PK);
-        return Optional.ofNullable(holder.getKey()).orElseThrow(() -> new ResourceNotFoundException(primaryKeyErr))
-                .longValue();
+        Long generatedKey = (Long) holder.getKey();
+        if (generatedKey == null) {
+            throw new io.github.thirumalx.exception.ResourceNotFoundException(primaryKeyErr);
+        }
+        return generatedKey.longValue();
     }
 
     @Override
     public ProviderConfiguration findById(Long id) {
         return jdbcClient.sql(getSql(GET))
                 .param(PK, id)
+                .query(ProviderConfiguration.class)
+                .single();
+    }
+
+    @Override
+    public ProviderConfiguration findByProviderCodeAndEnvironment(String providerCode, Short environmentCd) {
+        return jdbcClient.sql(getSql(GET_BY_CODE_AND_ENV))
+                .param("provider_code", providerCode)
+                .param("environment_cd", environmentCd)
                 .query(ProviderConfiguration.class)
                 .single();
     }
@@ -66,6 +79,7 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
                 .param("signature_provider_id", providerConfiguration.signatureProviderId())
                 .param("application_id", providerConfiguration.applicationId())
                 .param("environment_cd", providerConfiguration.environmentCd())
+                .param("asp_id", providerConfiguration.aspId())
                 .param("api_url", providerConfiguration.apiUrl())
                 .param("health_url", providerConfiguration.healthUrl())
                 .param("timeout_ms", providerConfiguration.timeoutMs())
