@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,21 +13,16 @@ import java.util.Optional;
 @Repository
 public class SignatureRequestDao extends GenericDao implements SignatureRequestRepository {
 
-    SignatureRequestDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    SignatureRequestDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "signature_request_id";
-    private static final String CREATE = "SignatureRequest.create";
-    private static final String GET = "SignatureRequest.get";
-    private static final String LIST = "SignatureRequest.list";
-    private static final String UPDATE = "SignatureRequest.update";
-    private static final String DELETE = "SignatureRequest.delete";
 
     @Override
     public Long save(SignatureRequest signatureRequest) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.signature_request (application_id, status_cd, reference_no, original_document_hash, original_document_path, request_payload, update_info) VALUES (:application_id, :status_cd, :reference_no, :original_document_hash, :original_document_path, :request_payload::jsonb, :update_info)")
                 .param("application_id", signatureRequest.applicationId())
                 .param("status_cd", signatureRequest.statusCd())
                 .param("reference_no", signatureRequest.referenceNo())
@@ -43,7 +37,7 @@ public class SignatureRequestDao extends GenericDao implements SignatureRequestR
 
     @Override
     public SignatureRequest findById(Long id) {
-        return jdbcClient.sql(getSql(GET))
+        return jdbcClient.sql("SELECT * FROM public.signature_request WHERE signature_request_id = :signature_request_id")
                 .param(PK, id)
                 .query(SignatureRequest.class)
                 .single();
@@ -51,14 +45,14 @@ public class SignatureRequestDao extends GenericDao implements SignatureRequestR
 
     @Override
     public List<SignatureRequest> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.signature_request ORDER BY signature_request_id DESC")
                 .query(SignatureRequest.class)
                 .list();
     }
 
     @Override
     public int update(SignatureRequest signatureRequest) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.signature_request SET application_id = :application_id, status_cd = :status_cd, reference_no = :reference_no, original_document_hash = :original_document_hash, original_document_path = :original_document_path, request_payload = :request_payload::jsonb, update_info = :update_info, updated_at = current_timestamp WHERE signature_request_id = :signature_request_id")
                 .param("application_id", signatureRequest.applicationId())
                 .param("status_cd", signatureRequest.statusCd())
                 .param("reference_no", signatureRequest.referenceNo())
@@ -72,7 +66,7 @@ public class SignatureRequestDao extends GenericDao implements SignatureRequestR
 
     @Override
     public int delete(Long id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.signature_request WHERE signature_request_id = :signature_request_id")
                 .param(PK, id)
                 .update();
     }

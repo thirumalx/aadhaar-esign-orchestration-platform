@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,21 +13,16 @@ import java.util.Optional;
 @Repository
 public class ApplicationDao extends GenericDao implements ApplicationRepository {
 
-    ApplicationDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    ApplicationDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "application_id";
-    private static final String CREATE = "Application.create";
-    private static final String GET = "Application.get";
-    private static final String LIST = "Application.list";
-    private static final String UPDATE = "Application.update";
-    private static final String DELETE = "Application.delete";
 
     @Override
     public Long save(Application application) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.application (application_name, application_code, webhook_url, update_info) VALUES (:application_name, :application_code, :webhook_url, :update_info)")
                 .param("application_name", application.applicationName())
                 .param("application_code", application.applicationCode())
                 .param("webhook_url", application.webhookUrl())
@@ -40,7 +34,7 @@ public class ApplicationDao extends GenericDao implements ApplicationRepository 
 
     @Override
     public Optional<Application> findById(Long id) {
-        return Optional.ofNullable(jdbcClient.sql(getSql(GET))
+        return Optional.ofNullable(jdbcClient.sql("SELECT * FROM public.application WHERE application_id = :application_id")
                 .param(PK, id)
                 .query(Application.class)
                 .single());
@@ -48,7 +42,7 @@ public class ApplicationDao extends GenericDao implements ApplicationRepository 
 
     @Override
     public Optional<Application> findByCode(String applicationCode) {
-        return Optional.ofNullable(jdbcClient.sql("SELECT * FROM public.applications WHERE application_code = :application_code")
+        return Optional.ofNullable(jdbcClient.sql("SELECT * FROM public.application WHERE application_code = :application_code")
                 .param("application_code", applicationCode)
                 .query(Application.class)
                 .single());
@@ -56,14 +50,14 @@ public class ApplicationDao extends GenericDao implements ApplicationRepository 
 
     @Override
     public List<Application> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.application ORDER BY application_id DESC")
                 .query(Application.class)
                 .list();
     }
 
     @Override
     public int update(Application application) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.application SET application_name = :application_name, application_code = :application_code, webhook_url = :webhook_url, update_info = :update_info, updated_at = current_timestamp WHERE application_id = :application_id")
                 .param("application_name", application.applicationName())
                 .param("application_code", application.applicationCode())
                 .param("webhook_url", application.webhookUrl())
@@ -74,7 +68,7 @@ public class ApplicationDao extends GenericDao implements ApplicationRepository 
 
     @Override
     public int delete(Long id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.application WHERE application_id = :application_id")
                 .param(PK, id)
                 .update();
     }

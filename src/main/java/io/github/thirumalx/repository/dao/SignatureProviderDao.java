@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,22 +13,16 @@ import java.util.Optional;
 @Repository
 public class SignatureProviderDao extends GenericDao implements SignatureProviderRepository {
 
-    SignatureProviderDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    SignatureProviderDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "signature_provider_id";
-    private static final String CREATE = "SignatureProvider.create";
-    private static final String GET = "SignatureProvider.get";
-    private static final String LIST = "SignatureProvider.list";
-    private static final String UPDATE = "SignatureProvider.update";
-    private static final String DELETE = "SignatureProvider.delete";
-    private static final String FIND_TOP_PRIORITY = "SignatureProvider.findTopPriority";
 
     @Override
     public Short save(SignatureProvider signatureProvider) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.signature_provider (signature_provider_id, provider_code, provider_name, priority) VALUES (:signature_provider_id, :provider_code, :provider_name, :priority)")
                 .param("signature_provider_id", signatureProvider.signatureProviderId())
                 .param("provider_code", signatureProvider.providerCode())
                 .param("provider_name", signatureProvider.providerName())
@@ -41,7 +34,7 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
 
     @Override
     public SignatureProvider findById(Short id) {
-        return jdbcClient.sql(getSql(GET))
+        return jdbcClient.sql("SELECT * FROM public.signature_provider WHERE signature_provider_id = :signature_provider_id")
                 .param(PK, id)
                 .query(SignatureProvider.class)
                 .single();
@@ -49,14 +42,14 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
 
     @Override
     public List<SignatureProvider> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.signature_provider ORDER BY signature_provider_id DESC")
                 .query(SignatureProvider.class)
                 .list();
     }
 
     @Override
     public int update(SignatureProvider signatureProvider) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.signature_provider SET provider_code = :provider_code, provider_name = :provider_name, priority = :priority, updated_at = current_timestamp WHERE signature_provider_id = :signature_provider_id")
                 .param("provider_code", signatureProvider.providerCode())
                 .param("provider_name", signatureProvider.providerName())
                 .param("priority", signatureProvider.priority())
@@ -66,21 +59,21 @@ public class SignatureProviderDao extends GenericDao implements SignatureProvide
 
     @Override
     public int delete(Short id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.signature_provider WHERE signature_provider_id = :signature_provider_id")
                 .param(PK, id)
                 .update();
     }
 
     @Override
     public SignatureProvider findTopPriority() {
-        return jdbcClient.sql(getSql(FIND_TOP_PRIORITY))
+        return jdbcClient.sql("SELECT * FROM public.signature_provider ORDER BY priority ASC LIMIT 1")
                 .query(SignatureProvider.class)
                 .single();
     }
 
     @Override
     public Optional<SignatureProvider> findByApplicationId(Long applicationId) {
-        return Optional.ofNullable(jdbcClient.sql(getSql("SignatureProvider.findByApplicationId"))
+        return Optional.ofNullable(jdbcClient.sql("SELECT sp.* FROM public.signature_provider sp INNER JOIN public.provider_configuration pc ON sp.signature_provider_id = pc.signature_provider_id INNER JOIN public.application a ON a.application_id = pc.application_id WHERE a.application_code = :application_id LIMIT 1")
                 .param("application_id", applicationId)
                 .query(SignatureProvider.class)
                 .stream()

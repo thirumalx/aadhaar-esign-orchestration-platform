@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,21 +13,16 @@ import java.util.Optional;
 @Repository
 public class SignatureAttemptDao extends GenericDao implements SignatureAttemptRepository {
 
-    SignatureAttemptDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    SignatureAttemptDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "signature_attempt_id";
-    private static final String CREATE = "SignatureAttempt.create";
-    private static final String GET = "SignatureAttempt.get";
-    private static final String LIST = "SignatureAttempt.list";
-    private static final String UPDATE = "SignatureAttempt.update";
-    private static final String DELETE = "SignatureAttempt.delete";
 
     @Override
     public Long save(SignatureAttempt signatureAttempt) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.signature_attempt (signature_request_id, provider_configuration_id, status_cd, request_sent_at, response_received_at, provider_transaction_id, request_payload, response_payload, http_status, provider_status_code, provider_status_message, error_code, error_message) VALUES (:signature_request_id, :provider_configuration_id, :status_cd, :request_sent_at, :response_received_at, :provider_transaction_id, :request_payload::jsonb, :response_payload::jsonb, :http_status, :provider_status_code, :provider_status_message, :error_code, :error_message)")
                 .param("signature_request_id", signatureAttempt.signatureRequestId())
                 .param("provider_configuration_id", signatureAttempt.providerConfigurationId())
                 .param("status_cd", signatureAttempt.statusCd())
@@ -49,7 +43,7 @@ public class SignatureAttemptDao extends GenericDao implements SignatureAttemptR
 
     @Override
     public SignatureAttempt findById(Long id) {
-        return jdbcClient.sql(getSql(GET))
+        return jdbcClient.sql("SELECT * FROM public.signature_attempt WHERE signature_attempt_id = :signature_attempt_id")
                 .param(PK, id)
                 .query(SignatureAttempt.class)
                 .single();
@@ -57,14 +51,14 @@ public class SignatureAttemptDao extends GenericDao implements SignatureAttemptR
 
     @Override
     public List<SignatureAttempt> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.signature_attempt ORDER BY signature_attempt_id DESC")
                 .query(SignatureAttempt.class)
                 .list();
     }
 
     @Override
     public int update(SignatureAttempt signatureAttempt) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.signature_attempt SET signature_request_id = :signature_request_id, provider_configuration_id = :provider_configuration_id, status_cd = :status_cd, request_sent_at = :request_sent_at, response_received_at = :response_received_at, provider_transaction_id = :provider_transaction_id, request_payload = :request_payload::jsonb, response_payload = :response_payload::jsonb, http_status = :http_status, provider_status_code = :provider_status_code, provider_status_message = :provider_status_message, error_code = :error_code, error_message = :error_message, updated_at = current_timestamp WHERE signature_attempt_id = :signature_attempt_id")
                 .param("signature_request_id", signatureAttempt.signatureRequestId())
                 .param("provider_configuration_id", signatureAttempt.providerConfigurationId())
                 .param("status_cd", signatureAttempt.statusCd())
@@ -84,7 +78,7 @@ public class SignatureAttemptDao extends GenericDao implements SignatureAttemptR
 
     @Override
     public int delete(Long id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.signature_attempt WHERE signature_attempt_id = :signature_attempt_id")
                 .param(PK, id)
                 .update();
     }

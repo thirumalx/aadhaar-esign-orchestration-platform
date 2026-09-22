@@ -36,8 +36,10 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
+import io.github.thirumalx.exception.ResourceNotFoundException;
 import io.github.thirumalx.service.EsignProvider;
 import io.github.thirumalx.service.XmlSignerService;
+import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
 
 /**
@@ -48,14 +50,11 @@ import io.github.thirumalx.repository.ProviderConfigurationRepository;
 public class CdacEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(CdacEsignProvider.class);
-    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
     private final XmlSignerService xmlSignerService;
     private final ProviderConfigurationRepository providerConfigurationRepository;
     private final Environment environment;
 
-    public CdacEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService) {
-    public CdacEsignProvider(XmlSignerService xmlSignerService,
-                             ProviderConfigurationRepository providerConfigurationRepository,
+    public CdacEsignProvider(XmlSignerService xmlSignerService, ProviderConfigurationRepository providerConfigurationRepository,
                              Environment environment) {
         this.xmlSignerService = xmlSignerService;
         this.providerConfigurationRepository = providerConfigurationRepository;
@@ -95,13 +94,9 @@ public class CdacEsignProvider implements EsignProvider {
         logger.info("Initiating eSign with CDAC for {}", esignDto.signId());
         try {
             // Fetch configuration dynamically from DB based on environment
-            io.github.thirumalx.model.ProviderConfiguration config = providerConfigurationRepository
-                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment));
-            
-            if (config == null) {
-                throw new RuntimeException("Provider configuration not found for CDAC in current environment");
-            }
-
+            ProviderConfiguration config = providerConfigurationRepository
+                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment))
+                    .orElseThrow(() -> new ResourceNotFoundException("Provider configuration not found for CDAC in current environment"));
             String aspId = config.aspId();
             String esignFormUrl = config.apiUrl();
 
@@ -162,10 +157,6 @@ public class CdacEsignProvider implements EsignProvider {
             String s2 = "<Esign AuthMode=\"" + authMode + "\" aspId=\"" + aspId + "\" ekycId=\"\" ekycIdType=\"" + ekycIdType + "\" responseSigType=\"" + responseSigType + "\" responseUrl=\"" + responseUrl + "\" sc=\"" + sc + "\" ts=\"" + ts + "\" txn=\"" + txn + "\" ver=\"2.1\">";
             String docHash = "<Docs>\n<InputHash docInfo=\"" + docInfo + "\" hashAlgorithm=\"" + hashAlgorithm + "\" id=\"1\">" + sha256hex + "</InputHash>\n</Docs>\n</Esign>";
             String eSignXmlStr = s1 + "\n" + s2 + docHash;
-            String s2 = "<Esign AuthMode=\"" + authMode + "\" aspId=\"" + aspId + "\" ekycId=\"\" ekycIdType=\"" + ekycIdType + "\" responseSigType=\"" + responseSigType + "\" responseUrl=\"" + responseUrl + "\" sc=\"" + consent + "\" ts=\"" + ts + "\" txn=\"" + txn + "\" ver=\"2.1\">";
-            String docHashXml = "<Docs>\n<InputHash docInfo=\"" + docInfo + "\" hashAlgorithm=\"" + hashAlgorithm + "\" id=\"1\">" + sha256hex + "</InputHash>\n</Docs>\n</Esign>";
-            String eSignXmlStr = s1 + "\n" + s2 + docHashXml;
-
             // 3. Sign the XML natively using our central XmlSignerService
             String signedXml = xmlSignerService.signXml(eSignXmlStr);
 

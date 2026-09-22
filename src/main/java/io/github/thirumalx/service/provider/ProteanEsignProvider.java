@@ -9,6 +9,7 @@ import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.service.EsignProvider;
 import io.github.thirumalx.service.XmlSignerService;
+import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
 
 /**
@@ -20,16 +21,10 @@ public class ProteanEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(ProteanEsignProvider.class);
 
-    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
-    private final io.github.thirumalx.repository.ProviderConfigurationRepository providerConfigurationRepository;
-    private final org.springframework.core.env.Environment environment;
     private final XmlSignerService xmlSignerService;
     private final ProviderConfigurationRepository providerConfigurationRepository;
     private final Environment environment;
 
-    public ProteanEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService,
-                                io.github.thirumalx.repository.ProviderConfigurationRepository providerConfigurationRepository,
-                                org.springframework.core.env.Environment environment) {
     public ProteanEsignProvider(XmlSignerService xmlSignerService,
                                 ProviderConfigurationRepository providerConfigurationRepository,
                                 Environment environment) {
@@ -43,28 +38,14 @@ public class ProteanEsignProvider implements EsignProvider {
         return "protean";
     }
 
-    private Short getEnvironmentCd() {
-        String[] activeProfiles = environment.getActiveProfiles();
-        if (activeProfiles.length > 0) {
-            String profile = activeProfiles[0].toLowerCase();
-            if (profile.contains("prod")) return 3;
-            if (profile.contains("uat")) return 2;
-        }
-        return 1; // Default to DEV
-    }
-
     @Override
     public EsignResponseDto initiateSign(EsignDto esignDto) {
         logger.info("Initiating eSign with Protean for {}", esignDto.signId());
         try {
             // Fetch configuration dynamically from DB based on environment
-            io.github.thirumalx.model.ProviderConfiguration config = providerConfigurationRepository
-                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd());
-                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment));
-            
-            if (config == null) {
-                throw new RuntimeException("Provider configuration not found for Protean in current environment");
-            }
+            ProviderConfiguration config = providerConfigurationRepository
+                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment))
+                    .orElseThrow(() -> new RuntimeException("Provider configuration not found for Protean in current environment"));
 
             String aspId = config.aspId();
             String actionUrl = config.apiUrl();
@@ -74,7 +55,7 @@ public class ProteanEsignProvider implements EsignProvider {
             String txn = esignDto.signId() != null ? esignDto.signId() : "ASP-" + System.currentTimeMillis();
             String authMode = esignDto.authMode() != null ? esignDto.authMode() : "1"; // Default to OTP
             String consent = esignDto.consent() != null ? esignDto.consent() : "Y";
-            
+
             String docHash = "4fd11688bf1aae8b964eccf96bd3ea363c8c259a960bd871d12dde36c7339a8f";
 
             // Mapping to the CCA / C-DAC standard <Esign> tag

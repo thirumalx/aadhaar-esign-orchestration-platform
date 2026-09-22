@@ -21,29 +21,11 @@ public abstract class GenericDao {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected final JdbcClient jdbcClient;
-    protected final Environment environment;
 
     protected String primaryKeyErr = "Not able to generate PK";
 
-    GenericDao(JdbcClient jdbcClient, Environment environment) {
+    GenericDao(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-        this.environment = environment;
-    }
-
-    /**
-     * Get SQL query from the properties/resources.
-     * 
-     * @param key
-     * @return SQL query
-     */
-    protected String getSql(@NotNull String key) {
-        String sql = environment.getProperty(key);
-        if (sql != null) {
-            return sql;
-        }
-        String errorMessage = "The SQL for the requested key " + key + " is not found";
-        logger.debug(errorMessage);
-        throw new ResourceNotFoundException("SQL is not found!!");
     }
 
     protected String setInvalues(String query, String replaceString, Set<String> inValues) {

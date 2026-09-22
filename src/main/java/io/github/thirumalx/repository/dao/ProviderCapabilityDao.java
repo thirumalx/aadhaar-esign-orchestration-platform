@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,21 +13,16 @@ import java.util.Optional;
 @Repository
 public class ProviderCapabilityDao extends GenericDao implements ProviderCapabilityRepository {
 
-    ProviderCapabilityDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    ProviderCapabilityDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "provider_capability_id";
-    private static final String CREATE = "ProviderCapability.create";
-    private static final String GET = "ProviderCapability.get";
-    private static final String LIST = "ProviderCapability.list";
-    private static final String UPDATE = "ProviderCapability.update";
-    private static final String DELETE = "ProviderCapability.delete";
 
     @Override
     public Integer save(ProviderCapability providerCapability) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.provider_capability (signature_provider_id, provider_cd) VALUES (:signature_provider_id, :provider_cd)")
                 .param("signature_provider_id", providerCapability.signatureProviderId())
                 .param("provider_cd", providerCapability.providerCd())
                 .update(holder, PK);
@@ -38,7 +32,7 @@ public class ProviderCapabilityDao extends GenericDao implements ProviderCapabil
 
     @Override
     public ProviderCapability findById(Integer id) {
-        return jdbcClient.sql(getSql(GET))
+        return jdbcClient.sql("SELECT * FROM public.provider_capability WHERE provider_capability_id = :provider_capability_id")
                 .param(PK, id)
                 .query(ProviderCapability.class)
                 .single();
@@ -46,14 +40,14 @@ public class ProviderCapabilityDao extends GenericDao implements ProviderCapabil
 
     @Override
     public List<ProviderCapability> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.provider_capability ORDER BY provider_capability_id DESC")
                 .query(ProviderCapability.class)
                 .list();
     }
 
     @Override
     public int update(ProviderCapability providerCapability) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.provider_capability SET signature_provider_id = :signature_provider_id, provider_cd = :provider_cd, updated_at = current_timestamp WHERE provider_capability_id = :provider_capability_id")
                 .param("signature_provider_id", providerCapability.signatureProviderId())
                 .param("provider_cd", providerCapability.providerCd())
                 .param(PK, providerCapability.providerCapabilityId())
@@ -62,7 +56,7 @@ public class ProviderCapabilityDao extends GenericDao implements ProviderCapabil
 
     @Override
     public int delete(Integer id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.provider_capability WHERE provider_capability_id = :provider_capability_id")
                 .param(PK, id)
                 .update();
     }

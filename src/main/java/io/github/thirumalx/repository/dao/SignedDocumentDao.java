@@ -1,6 +1,5 @@
 package io.github.thirumalx.repository.dao;
 
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,21 +13,16 @@ import java.util.Optional;
 @Repository
 public class SignedDocumentDao extends GenericDao implements SignedDocumentRepository {
 
-    SignedDocumentDao(JdbcClient jdbcClient, Environment environment) {
-        super(jdbcClient, environment);
+    SignedDocumentDao(JdbcClient jdbcClient) {
+        super(jdbcClient);
     }
 
     private static final String PK = "signed_document_id";
-    private static final String CREATE = "SignedDocument.create";
-    private static final String GET = "SignedDocument.get";
-    private static final String LIST = "SignedDocument.list";
-    private static final String UPDATE = "SignedDocument.update";
-    private static final String DELETE = "SignedDocument.delete";
 
     @Override
     public Long save(SignedDocument signedDocument) {
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcClient.sql(getSql(CREATE))
+        jdbcClient.sql("INSERT INTO public.signed_document (signature_request_id, storage_path, signed_hash, signed_time, signer_name, signer_yob, signer_gender, signer_pin, signer_aadhaar_suffix) VALUES (:signature_request_id, :storage_path, :signed_hash, :signed_time, :signer_name, :signer_yob, :signer_gender, :signer_pin, :signer_aadhaar_suffix)")
                 .param("signature_request_id", signedDocument.signatureRequestId())
                 .param("storage_path", signedDocument.storagePath())
                 .param("signed_hash", signedDocument.signedHash())
@@ -45,7 +39,7 @@ public class SignedDocumentDao extends GenericDao implements SignedDocumentRepos
 
     @Override
     public SignedDocument findById(Long id) {
-        return jdbcClient.sql(getSql(GET))
+        return jdbcClient.sql("SELECT * FROM public.signed_document WHERE signed_document_id = :signed_document_id")
                 .param(PK, id)
                 .query(SignedDocument.class)
                 .single();
@@ -53,14 +47,14 @@ public class SignedDocumentDao extends GenericDao implements SignedDocumentRepos
 
     @Override
     public List<SignedDocument> findAll() {
-        return jdbcClient.sql(getSql(LIST))
+        return jdbcClient.sql("SELECT * FROM public.signed_document ORDER BY signed_document_id DESC")
                 .query(SignedDocument.class)
                 .list();
     }
 
     @Override
     public int update(SignedDocument signedDocument) {
-        return jdbcClient.sql(getSql(UPDATE))
+        return jdbcClient.sql("UPDATE public.signed_document SET signature_request_id = :signature_request_id, storage_path = :storage_path, signed_hash = :signed_hash, signed_time = :signed_time, signer_name = :signer_name, signer_yob = :signer_yob, signer_gender = :signer_gender, signer_pin = :signer_pin, signer_aadhaar_suffix = :signer_aadhaar_suffix, updated_at = current_timestamp WHERE signed_document_id = :signed_document_id")
                 .param("signature_request_id", signedDocument.signatureRequestId())
                 .param("storage_path", signedDocument.storagePath())
                 .param("signed_hash", signedDocument.signedHash())
@@ -76,7 +70,7 @@ public class SignedDocumentDao extends GenericDao implements SignedDocumentRepos
 
     @Override
     public int delete(Long id) {
-        return jdbcClient.sql(getSql(DELETE))
+        return jdbcClient.sql("DELETE FROM public.signed_document WHERE signed_document_id = :signed_document_id")
                 .param(PK, id)
                 .update();
     }
