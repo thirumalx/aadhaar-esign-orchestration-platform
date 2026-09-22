@@ -2,13 +2,11 @@ package io.github.thirumalx.repository.dao;
 
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
-import io.github.thirumalx.exception.ResourceNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ProviderConfigurationDao extends GenericDao implements ProviderConfigurationRepository {
@@ -58,12 +56,12 @@ public class ProviderConfigurationDao extends GenericDao implements ProviderConf
     }
 
     @Override
-    public ProviderConfiguration findByProviderCodeAndEnvironment(String providerCode, Short environmentCd) {
-        return jdbcClient.sql(getSql(GET_BY_CODE_AND_ENV))
+    public Optional<ProviderConfiguration> findByProviderCodeAndEnvironment(String providerCode, Short environmentCd) {
+        return Optional.ofNullable(jdbcClient.sql(getSql(GET_BY_CODE_AND_ENV))
                 .param("provider_code", providerCode)
                 .param("environment_cd", environmentCd)
                 .query(ProviderConfiguration.class)
-                .single();
+                .single());
     }
 
     @Override

@@ -2,6 +2,7 @@ package io.github.thirumalx.repository;
 
 import io.github.thirumalx.model.ProviderConfiguration;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Thirumal M
@@ -12,7 +13,7 @@ public interface ProviderConfigurationRepository {
 
     ProviderConfiguration findById(Long id);
 
-    ProviderConfiguration findByProviderCodeAndEnvironment(String providerCode, Short environmentCd);
+    Optional<ProviderConfiguration> findByProviderCodeAndEnvironment(String providerCode, Short environmentCd);
 
     List<ProviderConfiguration> findAll();
 

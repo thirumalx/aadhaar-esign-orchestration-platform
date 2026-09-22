@@ -2,6 +2,7 @@ package io.github.thirumalx.service.provider;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,10 @@ import org.springframework.core.env.Environment;
 
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
+import io.github.thirumalx.exception.ResourceNotFoundException;
 import io.github.thirumalx.service.EsignProvider;
 import io.github.thirumalx.service.XmlSignerService;
+import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
 /**
  * @author Thirumal
@@ -45,13 +48,9 @@ public class EmudhraEsignProvider implements EsignProvider {
         logger.debug("Initiating eSign with Emudra for application: {}", esignDto.applicationId());
         try {
             // Fetch configuration dynamically from DB based on environment
-            io.github.thirumalx.model.ProviderConfiguration config = providerConfigurationRepository
-                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment));
-            
-            if (config == null) {
-                throw new RuntimeException("Provider configuration not found for eMudhra in current environment");
-            }
-
+            var config = providerConfigurationRepository
+                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment))
+                    .orElseThrow(() -> new ResourceNotFoundException("Provider configuration not found for eMudhra in current environment"));
             String aspId = config.aspId();
             String actionUrl = config.apiUrl();
 

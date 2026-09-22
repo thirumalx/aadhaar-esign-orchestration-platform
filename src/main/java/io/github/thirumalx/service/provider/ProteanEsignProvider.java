@@ -20,10 +20,16 @@ public class ProteanEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(ProteanEsignProvider.class);
 
+    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
+    private final io.github.thirumalx.repository.ProviderConfigurationRepository providerConfigurationRepository;
+    private final org.springframework.core.env.Environment environment;
     private final XmlSignerService xmlSignerService;
     private final ProviderConfigurationRepository providerConfigurationRepository;
     private final Environment environment;
 
+    public ProteanEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService,
+                                io.github.thirumalx.repository.ProviderConfigurationRepository providerConfigurationRepository,
+                                org.springframework.core.env.Environment environment) {
     public ProteanEsignProvider(XmlSignerService xmlSignerService,
                                 ProviderConfigurationRepository providerConfigurationRepository,
                                 Environment environment) {
@@ -37,12 +43,23 @@ public class ProteanEsignProvider implements EsignProvider {
         return "protean";
     }
 
+    private Short getEnvironmentCd() {
+        String[] activeProfiles = environment.getActiveProfiles();
+        if (activeProfiles.length > 0) {
+            String profile = activeProfiles[0].toLowerCase();
+            if (profile.contains("prod")) return 3;
+            if (profile.contains("uat")) return 2;
+        }
+        return 1; // Default to DEV
+    }
+
     @Override
     public EsignResponseDto initiateSign(EsignDto esignDto) {
         logger.info("Initiating eSign with Protean for {}", esignDto.signId());
         try {
             // Fetch configuration dynamically from DB based on environment
             io.github.thirumalx.model.ProviderConfiguration config = providerConfigurationRepository
+                    .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd());
                     .findByProviderCodeAndEnvironment(getProviderCode(), getEnvironmentCd(environment));
             
             if (config == null) {

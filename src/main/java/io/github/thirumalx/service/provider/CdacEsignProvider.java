@@ -48,10 +48,12 @@ import io.github.thirumalx.repository.ProviderConfigurationRepository;
 public class CdacEsignProvider implements EsignProvider {
 
     private final Logger logger = LoggerFactory.getLogger(CdacEsignProvider.class);
+    private final io.github.thirumalx.service.XmlSignerService xmlSignerService;
     private final XmlSignerService xmlSignerService;
     private final ProviderConfigurationRepository providerConfigurationRepository;
     private final Environment environment;
 
+    public CdacEsignProvider(io.github.thirumalx.service.XmlSignerService xmlSignerService) {
     public CdacEsignProvider(XmlSignerService xmlSignerService,
                              ProviderConfigurationRepository providerConfigurationRepository,
                              Environment environment) {
@@ -59,6 +61,29 @@ public class CdacEsignProvider implements EsignProvider {
         this.providerConfigurationRepository = providerConfigurationRepository;
         this.environment = environment;
     }
+
+    @Value("${cdac.aspId}")
+    private String aspId;
+    @Value("${cdac.authMode}")
+    private String authMode;
+    @Value("${cdac.ekycIdType}")
+    private String ekycIdType;
+    @Value("${cdac.responseSigType}")
+    private String responseSigType;
+    @Value("${cdac.sc}")
+    private String sc;
+    @Value("${cdac.docInfo}")
+    private String docInfo;
+    @Value("${cdac.hashAlgorithm}")
+    private String hashAlgorithm;
+    @Value("${cdac.responseUrl}")
+    private String responseUrl;
+    @Value("${cdac.keystorePath}")
+    private Resource keystorePath;
+    @Value("${cdac.keystorePassword}")
+    private String keystorePassword;
+    @Value("${cdac.esignFormUrl}")
+    private String esignFormUrl;
 
     @Override
     public String getProviderCode() {
@@ -123,6 +148,7 @@ public class CdacEsignProvider implements EsignProvider {
             // 2. Generate eSign XML
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
             String ts = sd.format(new Date());
+            String txn = "ASP-" + esignDto.signId();
             String txn = esignDto.signId() != null ? esignDto.signId() : "ASP-" + System.currentTimeMillis();
             String authMode = esignDto.authMode() != null ? esignDto.authMode() : "1"; // Default to OTP
             String consent = esignDto.consent() != null ? esignDto.consent() : "Y";
@@ -133,6 +159,9 @@ public class CdacEsignProvider implements EsignProvider {
             String hashAlgorithm = "SHA256";
             
             String s1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+            String s2 = "<Esign AuthMode=\"" + authMode + "\" aspId=\"" + aspId + "\" ekycId=\"\" ekycIdType=\"" + ekycIdType + "\" responseSigType=\"" + responseSigType + "\" responseUrl=\"" + responseUrl + "\" sc=\"" + sc + "\" ts=\"" + ts + "\" txn=\"" + txn + "\" ver=\"2.1\">";
+            String docHash = "<Docs>\n<InputHash docInfo=\"" + docInfo + "\" hashAlgorithm=\"" + hashAlgorithm + "\" id=\"1\">" + sha256hex + "</InputHash>\n</Docs>\n</Esign>";
+            String eSignXmlStr = s1 + "\n" + s2 + docHash;
             String s2 = "<Esign AuthMode=\"" + authMode + "\" aspId=\"" + aspId + "\" ekycId=\"\" ekycIdType=\"" + ekycIdType + "\" responseSigType=\"" + responseSigType + "\" responseUrl=\"" + responseUrl + "\" sc=\"" + consent + "\" ts=\"" + ts + "\" txn=\"" + txn + "\" ver=\"2.1\">";
             String docHashXml = "<Docs>\n<InputHash docInfo=\"" + docInfo + "\" hashAlgorithm=\"" + hashAlgorithm + "\" id=\"1\">" + sha256hex + "</InputHash>\n</Docs>\n</Esign>";
             String eSignXmlStr = s1 + "\n" + s2 + docHashXml;
