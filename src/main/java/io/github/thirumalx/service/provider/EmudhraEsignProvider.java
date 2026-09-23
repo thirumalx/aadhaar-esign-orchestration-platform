@@ -2,20 +2,18 @@ package io.github.thirumalx.service.provider;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.exception.ResourceNotFoundException;
+import io.github.thirumalx.repository.ProviderConfigurationRepository;
 import io.github.thirumalx.service.EsignProvider;
 import io.github.thirumalx.service.XmlSignerService;
-import io.github.thirumalx.model.ProviderConfiguration;
-import io.github.thirumalx.repository.ProviderConfigurationRepository;
 /**
  * @author Thirumal
  *         Implementation of the EsignProvider interface for Emudra eSign service.

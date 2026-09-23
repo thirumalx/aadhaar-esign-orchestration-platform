@@ -1,18 +1,9 @@
 package io.github.thirumalx.service.provider;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyStore;
 import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +11,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.core.env.Environment;
-import org.w3c.dom.Document;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSignature;
@@ -37,10 +26,10 @@ import com.itextpdf.text.pdf.PdfStamper;
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.dto.EsignResponseDto;
 import io.github.thirumalx.exception.ResourceNotFoundException;
-import io.github.thirumalx.service.EsignProvider;
-import io.github.thirumalx.service.XmlSignerService;
 import io.github.thirumalx.model.ProviderConfiguration;
 import io.github.thirumalx.repository.ProviderConfigurationRepository;
+import io.github.thirumalx.service.EsignProvider;
+import io.github.thirumalx.service.XmlSignerService;
 
 /**
  * @author Thirumal
@@ -143,7 +132,6 @@ public class CdacEsignProvider implements EsignProvider {
             // 2. Generate eSign XML
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
             String ts = sd.format(new Date());
-            String txn = "ASP-" + esignDto.signId();
             String txn = esignDto.signId() != null ? esignDto.signId() : "ASP-" + System.currentTimeMillis();
             String authMode = esignDto.authMode() != null ? esignDto.authMode() : "1"; // Default to OTP
             String consent = esignDto.consent() != null ? esignDto.consent() : "Y";
