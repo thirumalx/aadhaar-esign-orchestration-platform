@@ -23,13 +23,16 @@ public class EsignOrchestratorService {
     private final EsignProviderFactory providerFactory;
     private final SignatureProviderRepository signatureProviderRepository;
     private final ApplicationRepository applicationRepository;
+    private final io.github.thirumalx.service.routing.RoutingStrategyFactory routingStrategyFactory;
 
     public EsignOrchestratorService(EsignProviderFactory providerFactory,
             SignatureProviderRepository signatureProviderRepository,
-            ApplicationRepository applicationRepository) {
+            ApplicationRepository applicationRepository,
+            io.github.thirumalx.service.routing.RoutingStrategyFactory routingStrategyFactory) {
         this.providerFactory = providerFactory;
         this.signatureProviderRepository = signatureProviderRepository;
         this.applicationRepository = applicationRepository;
+        this.routingStrategyFactory = routingStrategyFactory;
     }
 
     /**
@@ -40,30 +43,51 @@ public class EsignOrchestratorService {
      */
     public EsignResponseDto initiateEsign(EsignDto esignDto) {
         logger.debug("Initiate eSign request for application: {}", esignDto.applicationId());
-        String providerCode = esignDto.providerCode();
         Long applicationId = esignDto.applicationId();
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new IllegalArgumentException("Application not found for ID: " + applicationId));
         logger.debug("Application found: {}", application.applicationName());
-        // If providerCode is not passed, fetch based on applicationId or fallback to
-        // highest priority
-        if (providerCode == null || providerCode.trim().isEmpty()) {
-            SignatureProvider preferredProvider = null;
-            if (esignDto.applicationId() != null) {
-                preferredProvider = signatureProviderRepository.findByApplicationId(applicationId)
-                        .orElse(null);
-            }
-            if (preferredProvider == null) {
-                preferredProvider = signatureProviderRepository.findTopPriority();
-            }
+        String providerCode = null;
 
-            if (preferredProvider == null) {
-                throw new IllegalStateException("No default eSign provider configured.");
+        // 1. If consumer specifically requested a routing strategy (e.g. CHEAPEST, WEIGHTED)
+        if (esignDto.routingStrategy() != null) {
+            io.github.thirumalx.service.routing.RoutingStrategy requestedStrategy = routingStrategyFactory.getStrategy(esignDto.routingStrategy());
+            if (requestedStrategy != null) {
+                providerCode = requestedStrategy.determineProvider(esignDto);
+                logger.debug("Routing strategy '{}' determined provider: {}", esignDto.routingStrategy(), providerCode);
             }
-            providerCode = preferredProvider.providerCode();
         }
 
-        // Get the specific provider strategy
+        // 2. EXPLICIT: Consumer passed a specific providerCode
+        if (providerCode == null) {
+            io.github.thirumalx.service.routing.RoutingStrategy explicitStrategy = routingStrategyFactory.getStrategy("EXPLICIT");
+            providerCode = explicitStrategy.determineProvider(esignDto);
+            if (providerCode != null) {
+                logger.debug("Explicit strategy determined provider: {}", providerCode);
+            }
+        }
+
+        // 3. App-level Preferred Provider
+        if (providerCode == null && applicationId != null) {
+            SignatureProvider preferredProvider = signatureProviderRepository.findByApplicationId(applicationId).orElse(null);
+            if (preferredProvider != null) {
+                providerCode = preferredProvider.providerCode();
+                logger.debug("Application preferred provider selected: {}", providerCode);
+            }
+        }
+
+        // 4. Fallback: PRIORITY
+        if (providerCode == null) {
+            io.github.thirumalx.service.routing.RoutingStrategy priorityStrategy = routingStrategyFactory.getStrategy("PRIORITY");
+            providerCode = priorityStrategy.determineProvider(esignDto);
+            logger.debug("Priority strategy fallback determined provider: {}", providerCode);
+        }
+
+        if (providerCode == null || providerCode.trim().isEmpty()) {
+            throw new IllegalStateException("No eSign provider could be determined via routing strategies.");
+        }
+
+        // Get the specific provider implementation
         EsignProvider provider = providerFactory.getProvider(providerCode);
         logger.debug("Signature will be assigned to {}", provider.getProviderCode());
         // Execute the strategy

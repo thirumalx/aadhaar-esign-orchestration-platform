@@ -30,6 +30,7 @@ public record EsignDto(Long applicationId, String signId,
         String location,
         String fileSourcePath, String fileDestinationPath,
         String providerCode,
+        String routingStrategy,
         String authMode, String consent,
         String successUrl, String failureUrl) {
 

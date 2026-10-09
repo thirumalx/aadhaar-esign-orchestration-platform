@@ -11,6 +11,8 @@ public record SignatureProvider(
                 String providerCode,
                 String providerName,
                 Short priority,
+                Double cost,
+                Integer weight,
                 OffsetDateTime createdAt,
                 OffsetDateTime updatedAt) {
 }

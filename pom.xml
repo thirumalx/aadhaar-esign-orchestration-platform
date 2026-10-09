@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.github.thirumalx</groupId>
 	<artifactId>aadhaar-esign-orchestration-platform</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>aadhaar-esign-orchestration-platform</name>
 	<description>Aadhaar eSign Orchestration Platform</description>
 	<url/>
