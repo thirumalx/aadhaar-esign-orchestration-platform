@@ -12,7 +12,7 @@
             |
     -----------------------------
     |            |              |
-    eMudhra     NSDL eSign     CDAC eSign
+    ESP 1     ESP 2           ESP 3
     |            |              |
     ------------Fallback---------
 
