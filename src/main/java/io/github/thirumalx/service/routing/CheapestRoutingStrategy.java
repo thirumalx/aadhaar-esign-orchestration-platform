@@ -10,7 +10,12 @@ import org.springframework.stereotype.Component;
 import io.github.thirumalx.dto.EsignDto;
 import io.github.thirumalx.model.SignatureProvider;
 import io.github.thirumalx.repository.SignatureProviderRepository;
-
+/**
+ * @author Thirumal
+ * Implementation of the RoutingStrategy interface that selects the provider with the lowest cost.
+ * This strategy queries the SignatureProviderRepository to find all available providers and selects the one with the
+ * CheapestRoutingStrategy
+ */
 @Component
 public class CheapestRoutingStrategy implements RoutingStrategy {
 

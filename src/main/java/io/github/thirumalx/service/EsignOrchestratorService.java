@@ -10,6 +10,8 @@ import io.github.thirumalx.model.Application;
 import io.github.thirumalx.model.SignatureProvider;
 import io.github.thirumalx.repository.ApplicationRepository;
 import io.github.thirumalx.repository.SignatureProviderRepository;
+import io.github.thirumalx.service.routing.RoutingStrategy;
+import io.github.thirumalx.service.routing.RoutingStrategyFactory;
 /**
  * @author Thirumal
  * Service class responsible for orchestrating the eSign process.
@@ -23,12 +25,12 @@ public class EsignOrchestratorService {
     private final EsignProviderFactory providerFactory;
     private final SignatureProviderRepository signatureProviderRepository;
     private final ApplicationRepository applicationRepository;
-    private final io.github.thirumalx.service.routing.RoutingStrategyFactory routingStrategyFactory;
+    private final RoutingStrategyFactory routingStrategyFactory;
 
     public EsignOrchestratorService(EsignProviderFactory providerFactory,
             SignatureProviderRepository signatureProviderRepository,
             ApplicationRepository applicationRepository,
-            io.github.thirumalx.service.routing.RoutingStrategyFactory routingStrategyFactory) {
+            RoutingStrategyFactory routingStrategyFactory) {
         this.providerFactory = providerFactory;
         this.signatureProviderRepository = signatureProviderRepository;
         this.applicationRepository = applicationRepository;
@@ -51,7 +53,7 @@ public class EsignOrchestratorService {
 
         // 1. If consumer specifically requested a routing strategy (e.g. CHEAPEST, WEIGHTED)
         if (esignDto.routingStrategy() != null) {
-            io.github.thirumalx.service.routing.RoutingStrategy requestedStrategy = routingStrategyFactory.getStrategy(esignDto.routingStrategy());
+            RoutingStrategy requestedStrategy = routingStrategyFactory.getStrategy(esignDto.routingStrategy());
             if (requestedStrategy != null) {
                 providerCode = requestedStrategy.determineProvider(esignDto);
                 logger.debug("Routing strategy '{}' determined provider: {}", esignDto.routingStrategy(), providerCode);
@@ -60,7 +62,7 @@ public class EsignOrchestratorService {
 
         // 2. EXPLICIT: Consumer passed a specific providerCode
         if (providerCode == null) {
-            io.github.thirumalx.service.routing.RoutingStrategy explicitStrategy = routingStrategyFactory.getStrategy("EXPLICIT");
+            RoutingStrategy explicitStrategy = routingStrategyFactory.getStrategy("EXPLICIT");
             providerCode = explicitStrategy.determineProvider(esignDto);
             if (providerCode != null) {
                 logger.debug("Explicit strategy determined provider: {}", providerCode);
@@ -78,7 +80,7 @@ public class EsignOrchestratorService {
 
         // 4. Fallback: PRIORITY
         if (providerCode == null) {
-            io.github.thirumalx.service.routing.RoutingStrategy priorityStrategy = routingStrategyFactory.getStrategy("PRIORITY");
+            RoutingStrategy priorityStrategy = routingStrategyFactory.getStrategy("PRIORITY");
             providerCode = priorityStrategy.determineProvider(esignDto);
             logger.debug("Priority strategy fallback determined provider: {}", providerCode);
         }

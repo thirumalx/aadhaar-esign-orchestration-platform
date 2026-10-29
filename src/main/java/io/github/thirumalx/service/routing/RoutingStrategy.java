@@ -3,6 +3,7 @@ package io.github.thirumalx.service.routing;
 import io.github.thirumalx.dto.EsignDto;
 
 /**
+ * @author Thirumal
  * Strategy interface for routing eSign requests to a provider.
  */
 public interface RoutingStrategy {
